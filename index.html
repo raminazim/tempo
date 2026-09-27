@@ -1,4 +1,641 @@
 <!doctype html>
-<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Tempo — One word at a time</title><meta name="description" content="Paste your text, set your pace, and read one word at a time with Tempo."><link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='8' fill='%23ffffff'/%3E%3Cpath d='M9 8h14v4h-5v13h-4V12H9z' fill='%23141414'/%3E%3C/svg%3E"><style>
-:root{color-scheme:dark;--bg:#101010;--panel:#191919;--line:#333333;--text:#f2f2f2;--muted:#aaaaaa;--accent:#ffffff}*{box-sizing:border-box}body{margin:0;background:var(--bg);color:var(--text);font-family:Arial,Helvetica,sans-serif;font-size:16px}button,input,textarea{font:inherit}button{cursor:pointer}button:disabled{cursor:default;opacity:.35}button:focus-visible,input:focus-visible,textarea:focus-visible{outline:2px solid var(--accent);outline-offset:5px}header{height:104px;border-bottom:1px solid var(--line);display:flex;align-items:center;justify-content:space-between;margin:0 5.3%}.brand{font-size:30px;letter-spacing:-1.5px;font-weight:750;display:flex;gap:12px;align-items:center}.mark{display:flex;gap:4px;align-items:center;height:28px}.mark i{width:5px;background:var(--accent);height:17px;border-radius:2px}.mark i:nth-child(2){height:28px}.mark i:nth-child(3){height:22px}.header-note{color:var(--muted);font-size:14px}main{max-width:1440px;margin:auto;padding:42px 5.3% 24px}.intro{display:flex;justify-content:space-between;align-items:end;margin-bottom:30px}h1{font-size:clamp(26px,3vw,38px);letter-spacing:-1.3px;font-weight:500;margin:0}.eyebrow{font-size:12px;letter-spacing:2px;color:var(--accent);margin:0 0 12px}.intro p:last-child{color:var(--muted);margin:0;font-size:14px}.workspace{display:grid;grid-template-columns:minmax(280px,.8fr) minmax(0,1.5fr);gap:22px}.editor,.reader{background:var(--panel);border:1px solid var(--line);border-radius:18px;overflow:hidden}.editor{display:flex;flex-direction:column;min-height:510px}.panel-head{display:flex;justify-content:space-between;align-items:center;padding:24px 24px 18px}.panel-head label{font-weight:600}.text-button{border:0;background:none;color:var(--muted);font-size:14px;padding:4px}.text-button:hover{color:var(--accent)}textarea{width:100%;flex:1;min-height:310px;background:transparent;border:0;resize:none;padding:0 24px 20px;color:#d6d6d6;line-height:1.85;font-size:16px;outline:none!important}textarea::placeholder{color:#828282}.editor-foot{padding:20px 24px;border-top:1px solid var(--line);display:flex;justify-content:space-between;color:var(--muted);font-size:13px}.reader{display:flex;flex-direction:column}.reader-top{display:flex;justify-content:space-between;align-items:center;padding:24px;color:var(--muted);font-size:12px;letter-spacing:1.5px}.status{letter-spacing:0;background:#292929;color:var(--accent);padding:7px 11px;border-radius:6px;font-size:12px}.stage{position:relative;min-height:280px;flex:1;display:flex;align-items:center;justify-content:center;padding:28px}.stage:before,.stage:after{content:'';position:absolute;left:50%;width:1px;height:24px;background:#696969}.stage:before{top:34px}.stage:after{bottom:34px}.word{font-size:clamp(32px,5vw,68px);font-weight:500;letter-spacing:-2px;max-width:100%;overflow-wrap:anywhere;text-align:center;line-height:1.15}.word.idle{color:#f2f2f2}.progress-area{padding:0 28px 22px}.progress-label{display:flex;justify-content:space-between;font-size:12px;color:var(--muted);margin-bottom:12px;font-variant-numeric:tabular-nums}.track{height:3px;background:#373737;border-radius:3px;overflow:hidden}.fill{height:100%;width:0;background:var(--accent)}.transport{border-top:1px solid var(--line);padding:21px;display:flex;justify-content:center;align-items:center;gap:16px}.icon-btn{width:42px;height:42px;display:grid;place-items:center;background:transparent;color:var(--muted);border:1px solid var(--line);border-radius:50%}.icon-btn:hover{color:var(--text);border-color:#7c7c7c}.play{display:flex;align-items:center;justify-content:center;gap:12px;min-width:168px;background:var(--accent);border:0;border-radius:30px;padding:14px 24px;color:#181818;font-weight:600}.play:hover{background:#dddddd}svg{width:19px;height:19px;fill:none;stroke:currentColor;stroke-width:1.7;stroke-linecap:round;stroke-linejoin:round}.speed{margin-top:22px;display:flex;align-items:center;gap:36px;padding:26px 30px;background:var(--panel);border:1px solid var(--line);border-radius:18px}.speed-title{min-width:150px}.speed-title label{font-size:14px;color:var(--muted)}.speed-value{display:flex;align-items:baseline;gap:7px;margin-top:6px}.speed-value input{width:78px;border:0;background:transparent;color:var(--text);font-size:30px;letter-spacing:-1px;padding:0;appearance:textfield}.speed-value input::-webkit-inner-spin-button{appearance:none}.speed-value span{color:var(--muted);font-size:12px;letter-spacing:1px}.slider-wrap{flex:1}input[type=range]{width:100%;accent-color:var(--accent);cursor:pointer;height:20px}.range-labels{display:flex;justify-content:space-between;color:var(--muted);font-size:12px;margin-top:9px}.pace-note{font-size:14px;color:var(--muted);line-height:1.6;max-width:175px;border-left:1px solid var(--line);padding-left:28px}footer{display:flex;justify-content:space-between;color:#898989;font-size:12px;padding:24px 2px}kbd{font:inherit;border:1px solid var(--line);border-radius:4px;padding:3px 7px;margin-right:5px} .options{display:flex;align-items:center;justify-content:center;gap:20px;padding:0 18px 22px;flex-wrap:wrap;font-size:14px;color:var(--muted)}.options label{display:flex;align-items:center;gap:7px;cursor:pointer}.options input{accent-color:var(--accent);width:16px;height:16px}.options span{font-size:12px}footer a{color:var(--text);text-decoration:none}footer a:hover{color:var(--accent)}@media(min-width:1500px){main{padding-top:65px}.editor{min-height:570px}}@media(max-width:850px){.workspace{grid-template-columns:1fr}.editor{min-height:270px}textarea{min-height:170px}.reader{min-height:400px}.intro p:last-child,.pace-note{display:none}.speed{gap:20px}.header-note{font-size:12px}header{height:80px}main{padding-top:28px}.word{font-size:48px}footer{gap:16px;line-height:1.7}.speed-title{min-width:115px}}@media(prefers-reduced-motion:no-preference){button{transition:background .15s,color .15s}}
-</style></head><body><header><div class="brand"><span class="mark" aria-hidden="true"><i></i><i></i><i></i></span>tempo</div><span class="header-note">One word at a time.</span></header><main><div class="intro"><div><p class="eyebrow">LESS NOISE. MORE FOCUS.</p><h1>Read at your own rhythm.</h1></div><p>Paste. Set your pace. Press play.</p></div><div class="workspace"><section class="editor"><div class="panel-head"><label for="text">Your text</label><div><button class="text-button" id="edit">Edit</button> <button class="text-button" id="clear">Clear</button></div></div><textarea id="text" placeholder="Paste anything you want to read here…" spellcheck="false"></textarea><div class="editor-foot"><span id="count">0 words</span><button class="text-button" id="sample">Try a sample ↗</button></div></section><section class="reader" aria-label="Word reader"><div class="reader-top"><span>FOCUS READER</span><span class="status" id="status">Ready when you are</span></div><div class="stage"><div class="word idle" id="word">Ready.</div></div><div class="progress-area"><div class="progress-label"><span id="position">0 / 0 words</span><span id="remaining">0 sec remaining</span></div><div class="track" role="progressbar" aria-label="Reading progress" aria-valuemin="0" aria-valuemax="100" aria-valuenow="0"><div class="fill" id="fill"></div></div></div><div class="transport"><button class="icon-btn" id="restart" aria-label="Restart reading" title="Restart"><svg viewBox="0 0 24 24"><path d="M3 10a9 9 0 1 1 2 8M3 4v6h6"/></svg></button><button class="play" id="play" disabled><svg viewBox="0 0 24 24" id="play-icon"><path d="m8 5 11 7-11 7Z" fill="currentColor" stroke="none"/></svg><span id="play-label">Start reading</span></button><button class="icon-btn" id="stop" aria-label="Stop reading" title="Stop"><svg viewBox="0 0 24 24"><rect x="6" y="6" width="12" height="12" rx="1" fill="currentColor" stroke="none"/></svg></button><button class="icon-btn" id="back" aria-label="Go back ten words" title="Back 10 words"><svg viewBox="0 0 24 24"><path d="m11 6-7 6 7 6m9-12-7 6 7 6"/></svg></button></div><div class="options"><label><input type="checkbox" id="loop"> Loop text</label><label><input type="checkbox" id="voice"> Read aloud</label><span id="voice-note">Voice pace varies by browser.</span></div></section></div><section class="speed" aria-label="Reading speed"><div class="speed-title"><label for="wpm">Reading speed</label><div class="speed-value"><input type="number" id="wpm" min="50" max="1200" value="300" step="10" aria-label="Words per minute"><span>WPM</span></div></div><div class="slider-wrap"><input type="range" id="speed" min="50" max="1200" step="10" value="300" aria-label="Reading speed slider"><div class="range-labels"><span>50 · Take it slow</span><span>1,200 · Find your flow</span></div></div><div class="pace-note">Change the speed anytime.<br>You're in control.</div></section><footer><span><kbd>Space</kbd> play / pause <span style="margin-left:12px"><kbd>←</kbd> back 10 words</span></span><span>Made by <a href="https://github.com/raminazim" target="_blank" rel="noopener noreferrer">Ramin Azim ↗</a></span></footer></main><script src="app.js"></script></body></html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width,initial-scale=1" />
+    <title>Tempo — One word at a time</title>
+    <meta
+      name="description"
+      content="Paste your text, set your pace, and read one word at a time with Tempo."
+    />
+    <link
+      rel="icon"
+      type="image/svg+xml"
+      href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='8' fill='%23ffffff'/%3E%3Cpath d='M9 8h14v4h-5v13h-4V12H9z' fill='%23141414'/%3E%3C/svg%3E"
+    />
+    <style>
+      /* Theme tokens: adjust these to change the monochrome palette. */
+      :root {
+        color-scheme: dark;
+        --bg: #101010;
+        --panel: #191919;
+        --line: #333333;
+        --text: #f2f2f2;
+        --muted: #aaaaaa;
+        --accent: #ffffff;
+      }
+      * {
+        box-sizing: border-box;
+      }
+      body {
+        margin: 0;
+        background: var(--bg);
+        color: var(--text);
+        font-family: Arial, Helvetica, sans-serif;
+        font-size: 16px;
+      }
+      button,
+      input,
+      textarea {
+        font: inherit;
+      }
+      button {
+        cursor: pointer;
+      }
+      button:disabled {
+        cursor: default;
+        opacity: 0.35;
+      }
+      button:focus-visible,
+      input:focus-visible,
+      textarea:focus-visible {
+        outline: 2px solid var(--accent);
+        outline-offset: 5px;
+      }
+      /* Header and brand */
+      header {
+        height: 104px;
+        border-bottom: 1px solid var(--line);
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        margin: 0 5.3%;
+      }
+      .brand {
+        font-size: 30px;
+        letter-spacing: -1.5px;
+        font-weight: 750;
+        display: flex;
+        gap: 12px;
+        align-items: center;
+      }
+      .mark {
+        display: flex;
+        gap: 4px;
+        align-items: center;
+        height: 28px;
+      }
+      .mark i {
+        width: 5px;
+        background: var(--accent);
+        height: 17px;
+        border-radius: 2px;
+      }
+      .mark i:nth-child(2) {
+        height: 28px;
+      }
+      .mark i:nth-child(3) {
+        height: 22px;
+      }
+      .header-note {
+        color: var(--muted);
+        font-size: 14px;
+      }
+      main {
+        max-width: 1440px;
+        margin: auto;
+        padding: 42px 5.3% 24px;
+      }
+      .intro {
+        display: flex;
+        justify-content: space-between;
+        align-items: end;
+        margin-bottom: 30px;
+      }
+      h1 {
+        font-size: clamp(26px, 3vw, 38px);
+        letter-spacing: -1.3px;
+        font-weight: 500;
+        margin: 0;
+      }
+      .eyebrow {
+        font-size: 12px;
+        letter-spacing: 2px;
+        color: var(--accent);
+        margin: 0 0 12px;
+      }
+      .intro p:last-child {
+        color: var(--muted);
+        margin: 0;
+        font-size: 14px;
+      }
+      /* Main workspace and text editor */
+      .workspace {
+        display: grid;
+        grid-template-columns: minmax(280px, 0.8fr) minmax(0, 1.5fr);
+        gap: 22px;
+      }
+      .editor,
+      .reader {
+        background: var(--panel);
+        border: 1px solid var(--line);
+        border-radius: 18px;
+        overflow: hidden;
+      }
+      .editor {
+        display: flex;
+        flex-direction: column;
+        min-height: 510px;
+      }
+      .panel-head {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        padding: 24px 24px 18px;
+      }
+      .panel-head label {
+        font-weight: 600;
+      }
+      .text-button {
+        border: 0;
+        background: none;
+        color: var(--muted);
+        font-size: 14px;
+        padding: 4px;
+      }
+      .text-button:hover {
+        color: var(--accent);
+      }
+      textarea {
+        width: 100%;
+        flex: 1;
+        min-height: 310px;
+        background: transparent;
+        border: 0;
+        resize: none;
+        padding: 0 24px 20px;
+        color: #d6d6d6;
+        line-height: 1.85;
+        font-size: 16px;
+        outline: none !important;
+      }
+      textarea::placeholder {
+        color: #828282;
+      }
+      .editor-foot {
+        padding: 20px 24px;
+        border-top: 1px solid var(--line);
+        display: flex;
+        justify-content: space-between;
+        color: var(--muted);
+        font-size: 13px;
+      }
+      .reader {
+        display: flex;
+        flex-direction: column;
+      }
+      /* Focus reader and progress indicator */
+      .reader-top {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        padding: 24px;
+        color: var(--muted);
+        font-size: 12px;
+        letter-spacing: 1.5px;
+      }
+      .status {
+        letter-spacing: 0;
+        background: #292929;
+        color: var(--accent);
+        padding: 7px 11px;
+        border-radius: 6px;
+        font-size: 12px;
+      }
+      .stage {
+        position: relative;
+        min-height: 280px;
+        flex: 1;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        padding: 28px;
+      }
+      .stage:before,
+      .stage:after {
+        content: "";
+        position: absolute;
+        left: 50%;
+        width: 1px;
+        height: 24px;
+        background: #696969;
+      }
+      .stage:before {
+        top: 34px;
+      }
+      .stage:after {
+        bottom: 34px;
+      }
+      .word {
+        font-size: clamp(32px, 5vw, 68px);
+        font-weight: 500;
+        letter-spacing: -2px;
+        max-width: 100%;
+        overflow-wrap: anywhere;
+        text-align: center;
+        line-height: 1.15;
+      }
+      .word.idle {
+        color: #f2f2f2;
+      }
+      .progress-area {
+        padding: 0 28px 22px;
+      }
+      .progress-label {
+        display: flex;
+        justify-content: space-between;
+        font-size: 12px;
+        color: var(--muted);
+        margin-bottom: 12px;
+        font-variant-numeric: tabular-nums;
+      }
+      .track {
+        height: 3px;
+        background: #373737;
+        border-radius: 3px;
+        overflow: hidden;
+      }
+      .fill {
+        height: 100%;
+        width: 0;
+        background: var(--accent);
+      }
+      /* Playback buttons */
+      .transport {
+        border-top: 1px solid var(--line);
+        padding: 21px;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        gap: 16px;
+      }
+      .icon-btn {
+        width: 42px;
+        height: 42px;
+        display: grid;
+        place-items: center;
+        background: transparent;
+        color: var(--muted);
+        border: 1px solid var(--line);
+        border-radius: 50%;
+      }
+      .icon-btn:hover {
+        color: var(--text);
+        border-color: #7c7c7c;
+      }
+      .play {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 12px;
+        min-width: 168px;
+        background: var(--accent);
+        border: 0;
+        border-radius: 30px;
+        padding: 14px 24px;
+        color: #181818;
+        font-weight: 600;
+      }
+      .play:hover {
+        background: #dddddd;
+      }
+      svg {
+        width: 19px;
+        height: 19px;
+        fill: none;
+        stroke: currentColor;
+        stroke-width: 1.7;
+        stroke-linecap: round;
+        stroke-linejoin: round;
+      }
+      /* Reading speed controls */
+      .speed {
+        margin-top: 22px;
+        display: flex;
+        align-items: center;
+        gap: 36px;
+        padding: 26px 30px;
+        background: var(--panel);
+        border: 1px solid var(--line);
+        border-radius: 18px;
+      }
+      .speed-title {
+        min-width: 150px;
+      }
+      .speed-title label {
+        font-size: 14px;
+        color: var(--muted);
+      }
+      .speed-value {
+        display: flex;
+        align-items: baseline;
+        gap: 7px;
+        margin-top: 6px;
+      }
+      .speed-value input {
+        width: 78px;
+        border: 0;
+        background: transparent;
+        color: var(--text);
+        font-size: 30px;
+        letter-spacing: -1px;
+        padding: 0;
+        appearance: textfield;
+      }
+      .speed-value input::-webkit-inner-spin-button {
+        appearance: none;
+      }
+      .speed-value span {
+        color: var(--muted);
+        font-size: 12px;
+        letter-spacing: 1px;
+      }
+      .slider-wrap {
+        flex: 1;
+      }
+      input[type="range"] {
+        width: 100%;
+        accent-color: var(--accent);
+        cursor: pointer;
+        height: 20px;
+      }
+      .range-labels {
+        display: flex;
+        justify-content: space-between;
+        color: var(--muted);
+        font-size: 12px;
+        margin-top: 9px;
+      }
+      .pace-note {
+        font-size: 14px;
+        color: var(--muted);
+        line-height: 1.6;
+        max-width: 175px;
+        border-left: 1px solid var(--line);
+        padding-left: 28px;
+      }
+      footer {
+        display: flex;
+        justify-content: space-between;
+        color: #898989;
+        font-size: 12px;
+        padding: 24px 2px;
+      }
+      kbd {
+        font: inherit;
+        border: 1px solid var(--line);
+        border-radius: 4px;
+        padding: 3px 7px;
+        margin-right: 5px;
+      }
+      .options {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 20px;
+        padding: 0 18px 22px;
+        flex-wrap: wrap;
+        font-size: 14px;
+        color: var(--muted);
+      }
+      .options label {
+        display: flex;
+        align-items: center;
+        gap: 7px;
+        cursor: pointer;
+      }
+      .options input {
+        accent-color: var(--accent);
+        width: 16px;
+        height: 16px;
+      }
+      .options span {
+        font-size: 12px;
+      }
+      footer a {
+        color: var(--text);
+        text-decoration: none;
+      }
+      footer a:hover {
+        color: var(--accent);
+      }
+      /* Responsive layouts and reduced-motion preference */
+      @media (min-width: 1500px) {
+        main {
+          padding-top: 65px;
+        }
+        .editor {
+          min-height: 570px;
+        }
+      }
+      @media (max-width: 850px) {
+        .workspace {
+          grid-template-columns: 1fr;
+        }
+        .editor {
+          min-height: 270px;
+        }
+        textarea {
+          min-height: 170px;
+        }
+        .reader {
+          min-height: 400px;
+        }
+        .intro p:last-child,
+        .pace-note {
+          display: none;
+        }
+        .speed {
+          gap: 20px;
+        }
+        .header-note {
+          font-size: 12px;
+        }
+        header {
+          height: 80px;
+        }
+        main {
+          padding-top: 28px;
+        }
+        .word {
+          font-size: 48px;
+        }
+        footer {
+          gap: 16px;
+          line-height: 1.7;
+        }
+        .speed-title {
+          min-width: 115px;
+        }
+      }
+      @media (prefers-reduced-motion: no-preference) {
+        button {
+          transition:
+            background 0.15s,
+            color 0.15s;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <header>
+      <div class="brand">
+        <span class="mark" aria-hidden="true"><i></i><i></i><i></i></span>tempo
+      </div>
+      <span class="header-note">One word at a time.</span>
+    </header>
+    <main>
+      <div class="intro">
+        <div>
+          <p class="eyebrow">LESS NOISE. MORE FOCUS.</p>
+          <h1>Read at your own rhythm.</h1>
+        </div>
+        <p>Paste. Set your pace. Press play.</p>
+      </div>
+      <div class="workspace">
+        <section class="editor">
+          <div class="panel-head">
+            <label for="text">Your text</label>
+            <div>
+              <button class="text-button" id="edit">Edit</button>
+              <button class="text-button" id="clear">Clear</button>
+            </div>
+          </div>
+          <textarea
+            id="text"
+            placeholder="Paste anything you want to read here…"
+            spellcheck="false"
+          ></textarea>
+          <div class="editor-foot">
+            <span id="count">0 words</span
+            ><button class="text-button" id="sample">Try a sample ↗</button>
+          </div>
+        </section>
+        <section class="reader" aria-label="Word reader">
+          <div class="reader-top">
+            <span>FOCUS READER</span
+            ><span class="status" id="status">Ready when you are</span>
+          </div>
+          <div class="stage"><div class="word idle" id="word">Ready.</div></div>
+          <div class="progress-area">
+            <div class="progress-label">
+              <span id="position">0 / 0 words</span
+              ><span id="remaining">0 sec remaining</span>
+            </div>
+            <div
+              class="track"
+              role="progressbar"
+              aria-label="Reading progress"
+              aria-valuemin="0"
+              aria-valuemax="100"
+              aria-valuenow="0"
+            >
+              <div class="fill" id="fill"></div>
+            </div>
+          </div>
+          <div class="transport">
+            <button
+              class="icon-btn"
+              id="restart"
+              aria-label="Restart reading"
+              title="Restart"
+            >
+              <svg viewBox="0 0 24 24">
+                <path d="M3 10a9 9 0 1 1 2 8M3 4v6h6" />
+              </svg></button
+            ><button class="play" id="play" disabled>
+              <svg viewBox="0 0 24 24" id="play-icon">
+                <path
+                  d="m8 5 11 7-11 7Z"
+                  fill="currentColor"
+                  stroke="none"
+                /></svg
+              ><span id="play-label">Start reading</span></button
+            ><button
+              class="icon-btn"
+              id="stop"
+              aria-label="Stop reading"
+              title="Stop"
+            >
+              <svg viewBox="0 0 24 24">
+                <rect
+                  x="6"
+                  y="6"
+                  width="12"
+                  height="12"
+                  rx="1"
+                  fill="currentColor"
+                  stroke="none"
+                />
+              </svg></button
+            ><button
+              class="icon-btn"
+              id="back"
+              aria-label="Go back ten words"
+              title="Back 10 words"
+            >
+              <svg viewBox="0 0 24 24">
+                <path d="m11 6-7 6 7 6m9-12-7 6 7 6" />
+              </svg>
+            </button>
+          </div>
+          <div class="options">
+            <label><input type="checkbox" id="loop" /> Loop text</label
+            ><label><input type="checkbox" id="voice" /> Read aloud</label
+            ><span id="voice-note">Voice pace varies by browser.</span>
+          </div>
+        </section>
+      </div>
+      <section class="speed" aria-label="Reading speed">
+        <div class="speed-title">
+          <label for="wpm">Reading speed</label>
+          <div class="speed-value">
+            <input
+              type="number"
+              id="wpm"
+              min="50"
+              max="1200"
+              value="300"
+              step="10"
+              aria-label="Words per minute"
+            /><span>WPM</span>
+          </div>
+        </div>
+        <div class="slider-wrap">
+          <input
+            type="range"
+            id="speed"
+            min="50"
+            max="1200"
+            step="10"
+            value="300"
+            aria-label="Reading speed slider"
+          />
+          <div class="range-labels">
+            <span>50 · Take it slow</span><span>1,200 · Find your flow</span>
+          </div>
+        </div>
+        <div class="pace-note">
+          Change the speed anytime.<br />You're in control.
+        </div>
+      </section>
+      <footer>
+        <span
+          ><kbd>Space</kbd> play / pause
+          <span style="margin-left: 12px"
+            ><kbd>←</kbd> back 10 words</span
+          ></span
+        ><span
+          >Made by
+          <a
+            href="https://github.com/raminazim"
+            target="_blank"
+            rel="noopener noreferrer"
+            >Ramin Azim ↗</a
+          ></span
+        >
+      </footer>
+    </main>
+    <script src="app.js"></script>
+  </body>
+</html>

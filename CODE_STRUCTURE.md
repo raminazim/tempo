@@ -13,6 +13,6 @@ Tempo is intentionally dependency-free, so the project is easy to understand and
 - Change the speed range by editing the `min`, `max`, and `step` attributes on those same controls.
 - Update the sample passage in the `sample` button handler in `app.js`.
 - Update colours in the CSS variables near the top of the `<style>` block in `index.html`.
-- Change the displayed word chunk size in `speakChunk()` by editing `startIndex + 40`.
+- Change the speech chunk size in `speak()` by editing `start + 40`.
 
 The JavaScript is organized into state, display helpers, playback controls, settings, event listeners, and optional WebMCP integration so each area can be updated independently.
