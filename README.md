@@ -1,21 +1,9 @@
 # Tempo
 
-A black-and-white, browser-based speed reader by [Ramin Azim](https://github.com/raminazim).
+Tempo is an open-source project I came up with after realizing how easily I can lose focus and how difficult it can be to process information by simply reading blocks of text.
 
-Paste text and read it one word at a time at 50–1,200 WPM.
+I once watched a video that displayed words very quickly, one at a time. That format helped me focus and process what I was reading, so I wanted to create a simple version of that experience.
 
-## Features
+Tempo lets you paste in text and read it one word at a time at a pace you choose.
 
-- Play, pause, stop, restart, and rewind ten words
-- Editable text and looping
-- Optional browser text-to-speech
-- Word count, reading progress, and estimated time remaining
-- Responsive layout and keyboard shortcuts
-
-## Run
-
-Open `index.html` in a modern browser. No dependencies or build step are required.
-
-Keyboard shortcuts outside input fields: Space to play/pause, Left Arrow to rewind ten words, Escape to stop.
-
-Speech uses the browser's speech engine. Voice timing and word-boundary support vary across browsers, and selected WPM is approximate in read-aloud mode.
+Made by [Ramin Azim](https://github.com/raminazim).
