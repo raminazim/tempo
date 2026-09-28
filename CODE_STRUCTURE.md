@@ -5,7 +5,8 @@ Tempo is intentionally dependency-free, so the project is easy to understand and
 ## Files
 
 - `index.html` — page structure, accessible labels, and the monochrome visual styles.
-- `app.js` — reader state, playback controls, WPM timing, looping, keyboard shortcuts, and text-to-speech.
+- `app.js` — reader state, playback controls, WPM timing, looping, keyboard shortcuts, and word-by-word text-to-speech.
+- `assets/tempo-logo.png` — the monochrome PNG used in the header.
 
 ## Common adjustments
 
@@ -13,6 +14,6 @@ Tempo is intentionally dependency-free, so the project is easy to understand and
 - Change the speed range by editing the `min`, `max`, and `step` attributes on those same controls.
 - Update the sample passage in the `sample` button handler in `app.js`.
 - Update colours in the CSS variables near the top of the `<style>` block in `index.html`.
-- Change the speech chunk size in `speak()` by editing `start + 40`.
+- Change the speech rate mapping in `speakWord()` by editing the `wordsPerMinute / 180` value.
 
 The JavaScript is organized into state, display helpers, playback controls, settings, event listeners, and optional WebMCP integration so each area can be updated independently.

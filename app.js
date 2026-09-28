@@ -1,248 +1,316 @@
 // Tempo reader: state, rendering, playback, controls, and optional agent support.
-// Change wpm below together with the two default speed values in index.html.
 
-// ── DOM helper and shared reader state ────────────────────────────────────────
+// ── DOM references and reader state ──────────────────────────────────────────
 const $ = (id) => document.getElementById(id);
-let words = [],
-  index = -1,
-  playing = false,
-  done = false,
-  timer = null,
-  wpm = 300,
-  speechEpoch = 0;
+const ui = {
+  text: $("text"),
+  count: $("count"),
+  word: $("word"),
+  position: $("position"),
+  remaining: $("remaining"),
+  progress: document.querySelector('[role="progressbar"]'),
+  fill: $("fill"),
+  play: $("play"),
+  playLabel: $("play-label"),
+  playIcon: $("play-icon"),
+  restart: $("restart"),
+  stop: $("stop"),
+  back: $("back"),
+  status: $("status"),
+  loop: $("loop"),
+  voice: $("voice"),
+  voiceNote: $("voice-note"),
+  speed: $("speed"),
+  wpm: $("wpm"),
+};
+
+let words = [];
+let currentIndex = -1;
+let isPlaying = false;
+let isComplete = false;
+let timer = null;
+let wordsPerMinute = 300;
+let playbackEpoch = 0;
+
 const speechAvailable =
   "speechSynthesis" in window && "SpeechSynthesisUtterance" in window;
 
-// ── Time estimates and UI rendering ──────────────────────────────────────────
-function duration(n) {
-  const s = Math.ceil((n * 60) / wpm);
-  return s >= 60 ? `${Math.floor(s / 60)} min ${s % 60} sec` : `${s} sec`;
+// ── Time and display helpers ─────────────────────────────────────────────────
+function duration(wordCount) {
+  const seconds = Math.ceil((wordCount * 60) / wordsPerMinute);
+  return seconds >= 60
+    ? `${Math.floor(seconds / 60)} min ${seconds % 60} sec`
+    : `${seconds} sec`;
 }
+
+function progressPercent() {
+  if (!words.length) return 0;
+  if (isComplete) return 100;
+  return Math.min(100, Math.max(0, ((currentIndex + 1) / words.length) * 100));
+}
+
 function render() {
-  $("count").textContent = `${words.length.toLocaleString()} words`;
-  $("position").textContent =
-    `${Math.max(0, index + 1)} / ${words.length} words`;
-  $("remaining").textContent =
-    `${duration(done ? 0 : words.length - Math.max(0, index))} remaining`;
-  const p = words.length ? (Math.max(0, index + 1) / words.length) * 100 : 0;
-  $("fill").style.width = p + "%";
-  document
-    .querySelector("[role=progressbar]")
-    .setAttribute("aria-valuenow", Math.round(p));
-  $("word").textContent = index >= 0 ? words[index] : "Ready.";
-  $("play").disabled = !words.length;
-  $("restart").disabled = !words.length;
-  $("stop").disabled = !words.length;
-  $("back").disabled = index < 1;
-  $("play-label").textContent = playing
+  const progress = progressPercent();
+  const shownPosition = Math.max(0, currentIndex + 1);
+  const remainingWords = isComplete
+    ? 0
+    : Math.max(0, words.length - shownPosition);
+
+  ui.count.textContent = `${words.length.toLocaleString()} words`;
+  ui.position.textContent = `${shownPosition} / ${words.length} words`;
+  ui.remaining.textContent = `${duration(remainingWords)} remaining`;
+  ui.fill.style.width = `${progress}%`;
+  ui.progress.setAttribute("aria-valuenow", String(Math.round(progress)));
+  ui.word.textContent = currentIndex >= 0 ? words[currentIndex] : "Ready.";
+  ui.word.classList.toggle("idle", currentIndex < 0);
+
+  ui.play.disabled = !words.length;
+  ui.restart.disabled = !words.length;
+  ui.stop.disabled = !words.length;
+  ui.back.disabled = !words.length || currentIndex < 1;
+
+  ui.playLabel.textContent = isPlaying
     ? "Pause"
-    : done
+    : isComplete
       ? "Read again"
-      : index >= 0
+      : currentIndex >= 0
         ? "Resume"
         : "Start reading";
-  $("play-icon").innerHTML = playing
+  ui.playIcon.innerHTML = isPlaying
     ? '<path d="M8 5v14M16 5v14" stroke-width="4"/>'
     : '<path d="m8 5 11 7-11 7Z" fill="currentColor" stroke="none"/>';
-  $("status").textContent = playing
+  ui.status.textContent = isPlaying
     ? "In the flow"
-    : done
+    : isComplete
       ? "Reading complete"
-      : index >= 0
+      : currentIndex >= 0
         ? "Paused"
         : "Ready when you are";
 }
 
-// ── Playback lifecycle and silent WPM timer ───────────────────────────────────
-function cancel() {
+function tokenize(text) {
+  const trimmed = text.trim();
+  return trimmed ? trimmed.split(/\s+/u) : [];
+}
+
+function clampSpeed(value) {
+  const numericValue = Number(value);
+  if (!Number.isFinite(numericValue)) return null;
+  return Math.max(50, Math.min(1200, Math.round(numericValue)));
+}
+
+// ── Playback lifecycle ───────────────────────────────────────────────────────
+function cancelPlayback() {
   clearTimeout(timer);
-  speechEpoch++;
+  timer = null;
+  playbackEpoch += 1;
   if (speechAvailable) window.speechSynthesis.cancel();
 }
+
 function pause() {
-  cancel();
-  playing = false;
+  cancelPlayback();
+  isPlaying = false;
   render();
 }
+
 function finish() {
-  if ($("loop").checked) {
-    index = 0;
+  timer = null;
+  if (ui.loop.checked && words.length) {
+    currentIndex = 0;
+    isComplete = false;
+    isPlaying = true;
     render();
-    schedule();
-  } else {
-    playing = false;
-    done = true;
-    render();
+    schedulePlayback();
+    return;
   }
+
+  isPlaying = false;
+  isComplete = true;
+  render();
 }
+
 function tick() {
   timer = setTimeout(() => {
-    if (!playing) return;
-    if (index >= words.length - 1) {
+    timer = null;
+    if (!isPlaying) return;
+    if (currentIndex >= words.length - 1) {
       finish();
       return;
     }
-    index++;
+    currentIndex += 1;
     render();
     tick();
-  }, 60000 / wpm);
+  }, 60000 / wordsPerMinute);
 }
 
-// ── Read-aloud playback ──────────────────────────────────────────────────────
-// Speech boundary events align the displayed word with the browser voice.
-// Session IDs prevent cancelled utterances from changing the current reading.
-function speak() {
-  const epoch = ++speechEpoch,
-    start = index,
-    chunk = words.slice(start, start + 40),
-    offsets = [];
-  let offset = 0;
-  chunk.forEach((w) => {
-    offsets.push(offset);
-    offset += w.length + 1;
-  });
-  const utterance = new SpeechSynthesisUtterance(chunk.join(" "));
-  utterance.rate = Math.max(0.3, Math.min(4, wpm / 180));
-  utterance.onboundary = (e) => {
-    if (epoch !== speechEpoch || !playing) return;
-    let local = 0;
-    for (let i = 0; i < offsets.length; i++) {
-      if (offsets[i] <= e.charIndex) local = i;
-    }
-    index = start + local;
-    render();
-  };
+// Speak one word per utterance. This keeps the reader moving even when a
+// browser does not emit optional speech word-boundary events.
+function speakWord() {
+  if (!isPlaying || currentIndex < 0 || currentIndex >= words.length) return;
+
+  const epoch = ++playbackEpoch;
+  const utterance = new SpeechSynthesisUtterance(words[currentIndex]);
+  utterance.rate = Math.max(0.3, Math.min(4, wordsPerMinute / 180));
   utterance.onend = () => {
-    if (epoch !== speechEpoch || !playing) return;
-    index = start + chunk.length - 1;
-    render();
-    if (index >= words.length - 1) finish();
-    else {
-      index++;
-      render();
-      speak();
+    if (epoch !== playbackEpoch || !isPlaying) return;
+    if (currentIndex >= words.length - 1) {
+      finish();
+      return;
     }
+    currentIndex += 1;
+    render();
+    speakWord();
   };
-  utterance.onerror = () => {
-    if (epoch !== speechEpoch || !playing) return;
+  utterance.onerror = (event) => {
+    if (epoch !== playbackEpoch || !isPlaying) return;
     pause();
-    $("voice-note").textContent =
-      "Voice unavailable. Turn off Read aloud to continue.";
+    ui.voiceNote.textContent =
+      event?.error === "canceled"
+        ? "Read aloud was stopped."
+        : "Voice unavailable. Turn off Read aloud to continue.";
   };
+
   window.speechSynthesis.speak(utterance);
 }
 
-// ── Playback mode and user controls ──────────────────────────────────────────
-function schedule() {
-  if ($("voice").checked && speechAvailable) speak();
+function schedulePlayback() {
+  if (ui.voice.checked && speechAvailable) speakWord();
   else tick();
 }
-function toggle() {
+
+// ── User controls ────────────────────────────────────────────────────────────
+function togglePlayback() {
   if (!words.length) return;
-  if (playing) {
+  if (isPlaying) {
     pause();
     return;
   }
-  if (done || index < 0) {
-    index = 0;
-    done = false;
+
+  if (isComplete || currentIndex < 0) {
+    currentIndex = 0;
+    isComplete = false;
   }
-  playing = true;
+  isPlaying = true;
   render();
-  schedule();
+  schedulePlayback();
 }
-function setText(text) {
+
+function setText(text, { syncTextarea = true } = {}) {
   pause();
-  $("text").value = text;
-  words = text.trim() ? text.trim().split(/\s+/u) : [];
-  index = -1;
-  done = false;
-  render();
-}
-function setSpeed(value) {
-  const n = Number(value);
-  if (!Number.isFinite(n)) return;
-  wpm = Math.max(50, Math.min(1200, Math.round(n)));
-  $("wpm").value = wpm;
-  $("speed").value = wpm;
-  if (playing) {
-    cancel();
-    schedule();
-  }
-  render();
-}
-function back() {
-  const resume = playing;
-  pause();
-  index = Math.max(0, index - 10);
-  done = false;
-  render();
-  if (resume) {
-    playing = true;
-    render();
-    schedule();
-  }
-}
-function stop() {
-  pause();
-  index = -1;
-  done = false;
+  if (syncTextarea && ui.text.value !== text) ui.text.value = text;
+  words = tokenize(text);
+  currentIndex = -1;
+  isComplete = false;
   render();
 }
 
-// ── Input and button event bindings ──────────────────────────────────────────
-$("text").addEventListener("input", (e) => setText(e.target.value));
-$("edit").onclick = () => {
+function setSpeed(value) {
+  const nextSpeed = clampSpeed(value);
+  if (nextSpeed === null) {
+    ui.wpm.value = String(wordsPerMinute);
+    return;
+  }
+
+  const changed = nextSpeed !== wordsPerMinute;
+  wordsPerMinute = nextSpeed;
+  ui.wpm.value = String(wordsPerMinute);
+  ui.speed.value = String(wordsPerMinute);
+
+  if (changed && isPlaying) {
+    cancelPlayback();
+    schedulePlayback();
+  }
+  render();
+}
+
+function rewind() {
+  if (!words.length || currentIndex < 1) return;
+  const resume = isPlaying;
   pause();
-  $("text").focus();
-};
-$("clear").onclick = () => {
+  currentIndex = Math.max(0, currentIndex - 10);
+  isComplete = false;
+  render();
+  if (resume) {
+    isPlaying = true;
+    render();
+    schedulePlayback();
+  }
+}
+
+function stop() {
+  pause();
+  currentIndex = -1;
+  isComplete = false;
+  render();
+}
+
+function restart() {
+  if (!words.length) return;
+  stop();
+  togglePlayback();
+}
+
+// ── Event bindings ───────────────────────────────────────────────────────────
+ui.text.addEventListener("input", (event) =>
+  setText(event.target.value, { syncTextarea: false }),
+);
+$("edit").addEventListener("click", () => {
+  pause();
+  ui.text.focus();
+});
+$("clear").addEventListener("click", () => {
   setText("");
-  $("text").focus();
-};
-$("sample").onclick = () =>
+  ui.text.focus();
+});
+$("sample").addEventListener("click", () =>
   setText(
     "There is a rhythm to reading. A small space between one idea and the next. When the distractions fall away, all that remains is the word in front of you. Let your eyes settle. Let the words come to you. Start slowly, find a comfortable pace, and adjust as you go. You do not have to race to the finish. Sometimes, the best way to take in more is to focus on less. One word. One moment. One idea at a time.",
-  );
-$("play").onclick = toggle;
-$("restart").onclick = () => {
-  stop();
-  toggle();
-};
-$("stop").onclick = stop;
-$("back").onclick = back;
-$("speed").oninput = (e) => setSpeed(e.target.value);
-$("wpm").onchange = (e) => setSpeed(e.target.value);
-$("voice").onchange = () => {
-  if (playing) {
-    cancel();
-    schedule();
+  ),
+);
+ui.play.addEventListener("click", togglePlayback);
+ui.restart.addEventListener("click", restart);
+ui.stop.addEventListener("click", stop);
+ui.back.addEventListener("click", rewind);
+ui.speed.addEventListener("input", (event) => setSpeed(event.target.value));
+ui.wpm.addEventListener("change", (event) => setSpeed(event.target.value));
+ui.wpm.addEventListener("blur", (event) => setSpeed(event.target.value));
+ui.voice.addEventListener("change", () => {
+  if (isPlaying) {
+    cancelPlayback();
+    schedulePlayback();
   }
-};
+});
+
 if (!speechAvailable) {
-  $("voice").disabled = true;
-  $("voice-note").textContent = "Read aloud is unavailable in this browser.";
+  ui.voice.disabled = true;
+  ui.voiceNote.textContent = "Read aloud is unavailable in this browser.";
 }
-document.addEventListener("keydown", (e) => {
+
+document.addEventListener("keydown", (event) => {
   if (
-    /INPUT|TEXTAREA|BUTTON/.test(e.target.tagName) ||
-    e.target.isContentEditable
-  )
+    /INPUT|TEXTAREA|BUTTON/.test(event.target.tagName) ||
+    event.target.isContentEditable
+  ) {
     return;
-  if (e.code === "Space") {
-    e.preventDefault();
-    toggle();
   }
-  if (e.code === "ArrowLeft" && words.length) {
-    e.preventDefault();
-    back();
+  if (event.code === "Space") {
+    event.preventDefault();
+    togglePlayback();
   }
-  if (e.code === "Escape") stop();
+  if (event.code === "ArrowLeft" && words.length) {
+    event.preventDefault();
+    rewind();
+  }
+  if (event.code === "Escape") stop();
 });
+
 document.addEventListener("visibilitychange", () => {
-  if (document.hidden && playing) pause();
+  if (document.hidden && isPlaying) pause();
 });
+
 render();
+
+// Optional model-context control for supported hosts.
 if (document.modelContext?.registerTool) {
   try {
     Promise.resolve(
@@ -266,11 +334,12 @@ if (document.modelContext?.registerTool) {
             !Number.isInteger(input.wpm) ||
             input.wpm < 50 ||
             input.wpm > 1200
-          )
+          ) {
             throw new Error("Provide text and a WPM between 50 and 1200.");
+          }
           setText(input.text);
           setSpeed(input.wpm);
-          return { words: words.length, wpm, status: "ready" };
+          return { words: words.length, wpm: wordsPerMinute, status: "ready" };
         },
       }),
     ).catch(() => {});
