@@ -22,6 +22,16 @@ const ui = {
   voiceNote: $("voice-note"),
   speed: $("speed"),
   wpm: $("wpm"),
+  focusToggle: $("focus-toggle"),
+  focusTargets: [
+    document.querySelector("header"),
+    document.querySelector(".editor"),
+    document.querySelector(".progress-area"),
+    document.querySelector(".transport"),
+    document.querySelector(".options"),
+    document.querySelector(".speed"),
+    document.querySelector("footer"),
+  ],
 };
 
 const MAX_WORDS = 2500;
@@ -258,6 +268,20 @@ function restart() {
   togglePlayback();
 }
 
+function setFocusMode(enabled) {
+  document.body.classList.toggle("focus-mode", enabled);
+  ui.focusToggle.setAttribute("aria-pressed", String(enabled));
+  ui.focusToggle.setAttribute(
+    "aria-label",
+    enabled ? "Exit focus view" : "Enter focus view",
+  );
+  ui.focusToggle.textContent = enabled ? "Exit focus" : "Focus";
+  ui.status.setAttribute("aria-hidden", String(enabled));
+  ui.focusTargets.forEach((element) => {
+    element.inert = enabled;
+  });
+}
+
 // ── Event bindings ───────────────────────────────────────────────────────────
 ui.text.addEventListener("input", (event) =>
   setText(event.target.value, { syncTextarea: false }),
@@ -269,6 +293,9 @@ $("edit").addEventListener("click", () => {
 $("clear").addEventListener("click", () => {
   setText("");
   ui.text.focus();
+});
+ui.focusToggle.addEventListener("click", () => {
+  setFocusMode(!document.body.classList.contains("focus-mode"));
 });
 ui.play.addEventListener("click", togglePlayback);
 ui.restart.addEventListener("click", restart);
@@ -292,6 +319,15 @@ if (!speechAvailable) {
 }
 
 document.addEventListener("keydown", (event) => {
+  if (
+    event.code === "Escape" &&
+    document.body.classList.contains("focus-mode")
+  ) {
+    setFocusMode(false);
+    ui.focusToggle.focus();
+    return;
+  }
+
   if (
     /INPUT|TEXTAREA|BUTTON/.test(event.target.tagName) ||
     event.target.isContentEditable

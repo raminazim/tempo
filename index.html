@@ -210,6 +210,10 @@
         letter-spacing: 1.4px;
       }
 
+      .focus-toggle {
+        margin-left: auto;
+      }
+
       .status {
         padding: 6px 9px;
         border-radius: 5px;
@@ -458,6 +462,91 @@
         color: var(--white);
       }
 
+      body.focus-mode {
+        overflow: hidden;
+      }
+
+      .focus-mode header,
+      .focus-mode .editor,
+      .focus-mode .speed,
+      .focus-mode footer {
+        opacity: 0;
+        pointer-events: none;
+        transform: translateY(12px);
+      }
+
+      .focus-mode .reader {
+        position: fixed;
+        z-index: 10;
+        inset: 0;
+        display: block;
+        min-height: 0;
+        overflow: visible;
+        border: 0;
+        border-radius: 0;
+        background: transparent;
+        pointer-events: none;
+      }
+
+      .focus-mode .reader-top {
+        position: fixed;
+        z-index: 1;
+        top: 24px;
+        right: 5.3%;
+        padding: 0;
+        pointer-events: none;
+      }
+
+      .focus-mode .focus-toggle {
+        pointer-events: auto;
+      }
+
+      .focus-mode .status,
+      .focus-mode .progress-area,
+      .focus-mode .transport,
+      .focus-mode .options {
+        opacity: 0;
+        pointer-events: none;
+        transform: translateY(12px);
+      }
+
+      .focus-mode .stage {
+        position: absolute;
+        inset: 0;
+        min-height: 0;
+        padding: 10vh 10vw;
+      }
+
+      .focus-mode .stage::before,
+      .focus-mode .stage::after {
+        opacity: 0;
+      }
+
+      .focus-mode .word {
+        font-size: clamp(40px, 8vw, 96px);
+      }
+
+      @media (prefers-reduced-motion: no-preference) {
+        header,
+        .editor,
+        .reader,
+        .reader-top,
+        .status,
+        .progress-area,
+        .transport,
+        .options,
+        .speed,
+        footer,
+        .stage::before,
+        .stage::after {
+          transition:
+            opacity 0.35s ease,
+            transform 0.35s ease,
+            background 0.35s ease,
+            border-color 0.35s ease;
+        }
+      }
+
       @media (max-width: 860px) {
         header {
           height: 78px;
@@ -557,6 +646,15 @@
         <section class="reader" aria-label="Word reader">
           <div class="reader-top">
             <span class="status" id="status">Ready when you are</span>
+            <button
+              class="text-button focus-toggle"
+              id="focus-toggle"
+              type="button"
+              aria-label="Enter focus view"
+              aria-pressed="false"
+            >
+              Focus
+            </button>
           </div>
 
           <div class="stage">
