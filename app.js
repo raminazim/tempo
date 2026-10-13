@@ -23,6 +23,7 @@ const ui = {
   speed: $("speed"),
   wpm: $("wpm"),
   focusToggle: $("focus-toggle"),
+  focusPlay: $("focus-play"),
   focusTargets: [
     document.querySelector("header"),
     document.querySelector(".editor"),
@@ -90,6 +91,12 @@ function render() {
   ui.playIcon.innerHTML = isPlaying
     ? '<path d="M8 5v14M16 5v14" stroke-width="4"/>'
     : '<path d="m8 5 11 7-11 7Z" fill="currentColor" stroke="none"/>';
+  ui.focusPlay.disabled = !words.length;
+  ui.focusPlay.setAttribute("aria-label", ui.playLabel.textContent);
+  ui.focusPlay.title = ui.playLabel.textContent;
+  ui.focusPlay.innerHTML = isPlaying
+    ? '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M8 5v14M16 5v14" stroke-width="3"/></svg>'
+    : '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="m8 5 11 7-11 7Z" fill="currentColor" stroke="none"/></svg>';
   ui.status.textContent = isPlaying
     ? "In the flow"
     : isComplete
@@ -297,6 +304,7 @@ $("clear").addEventListener("click", () => {
 ui.focusToggle.addEventListener("click", () => {
   setFocusMode(!document.body.classList.contains("focus-mode"));
 });
+ui.focusPlay.addEventListener("click", togglePlayback);
 ui.play.addEventListener("click", togglePlayback);
 ui.restart.addEventListener("click", restart);
 ui.stop.addEventListener("click", stop);

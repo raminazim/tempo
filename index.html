@@ -522,6 +522,38 @@
         opacity: 0;
       }
 
+      .focus-controls {
+        display: none;
+      }
+
+      .focus-mode .focus-controls {
+        position: fixed;
+        z-index: 11;
+        right: 0;
+        bottom: max(24px, env(safe-area-inset-bottom));
+        left: 0;
+        display: flex;
+        justify-content: center;
+        opacity: 1;
+        pointer-events: none;
+      }
+
+      .focus-play {
+        width: 44px;
+        height: 44px;
+        display: grid;
+        place-items: center;
+        border: 1px solid #555555;
+        border-radius: 50%;
+        background: #222222;
+        color: var(--white);
+        pointer-events: auto;
+      }
+
+      .focus-play:hover:not(:disabled) {
+        background: #333333;
+      }
+
       .focus-mode .word {
         font-size: clamp(40px, 8vw, 96px);
       }
@@ -535,6 +567,7 @@
         .progress-area,
         .transport,
         .options,
+        .focus-controls,
         .speed,
         footer,
         .stage::before,
@@ -732,6 +765,21 @@
             <label><input type="checkbox" id="loop" /> Loop text</label>
             <label><input type="checkbox" id="voice" /> under rework</label>
             <span class="voice-note" id="voice-note">under rework</span>
+          </div>
+
+          <div class="focus-controls">
+            <button
+              class="focus-play"
+              id="focus-play"
+              type="button"
+              aria-label="Start reading"
+              title="Start reading"
+              disabled
+            >
+              <svg viewBox="0 0 24 24" aria-hidden="true">
+                <path d="m8 5 11 7-11 7Z" fill="currentColor" stroke="none" />
+              </svg>
+            </button>
           </div>
         </section>
       </div>
