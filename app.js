@@ -24,6 +24,8 @@ const ui = {
   wpm: $("wpm"),
 };
 
+const MAX_WORDS = 2500;
+
 let words = [];
 let currentIndex = -1;
 let isPlaying = false;
@@ -32,8 +34,7 @@ let timer = null;
 let wordsPerMinute = 300;
 let playbackEpoch = 0;
 
-const speechAvailable =
-  "speechSynthesis" in window && "SpeechSynthesisUtterance" in window;
+const speechAvailable = false;
 
 // ── Time and display helpers ─────────────────────────────────────────────────
 function duration(wordCount) {
@@ -91,6 +92,12 @@ function render() {
 function tokenize(text) {
   const trimmed = text.trim();
   return trimmed ? trimmed.split(/\s+/u) : [];
+}
+
+function limitTextToWordCap(text) {
+  const allWords = tokenize(text);
+  if (allWords.length <= MAX_WORDS) return text;
+  return allWords.slice(0, MAX_WORDS).join(" ");
 }
 
 function clampSpeed(value) {
@@ -166,8 +173,8 @@ function speakWord() {
     pause();
     ui.voiceNote.textContent =
       event?.error === "canceled"
-        ? "Read aloud was stopped."
-        : "Voice unavailable. Turn off Read aloud to continue.";
+        ? "under rework"
+        : "under rework";
   };
 
   window.speechSynthesis.speak(utterance);
@@ -197,8 +204,9 @@ function togglePlayback() {
 
 function setText(text, { syncTextarea = true } = {}) {
   pause();
-  if (syncTextarea && ui.text.value !== text) ui.text.value = text;
-  words = tokenize(text);
+  const limitedText = limitTextToWordCap(text);
+  if (syncTextarea && ui.text.value !== limitedText) ui.text.value = limitedText;
+  words = tokenize(limitedText);
   currentIndex = -1;
   isComplete = false;
   render();
@@ -262,11 +270,6 @@ $("clear").addEventListener("click", () => {
   setText("");
   ui.text.focus();
 });
-$("sample").addEventListener("click", () =>
-  setText(
-    "There is a rhythm to reading. A small space between one idea and the next. When the distractions fall away, all that remains is the word in front of you. Let your eyes settle. Let the words come to you. Start slowly, find a comfortable pace, and adjust as you go. You do not have to race to the finish. Sometimes, the best way to take in more is to focus on less. One word. One moment. One idea at a time.",
-  ),
-);
 ui.play.addEventListener("click", togglePlayback);
 ui.restart.addEventListener("click", restart);
 ui.stop.addEventListener("click", stop);
@@ -282,8 +285,10 @@ ui.voice.addEventListener("change", () => {
 });
 
 if (!speechAvailable) {
+  ui.voice.checked = false;
   ui.voice.disabled = true;
-  ui.voiceNote.textContent = "Read aloud is unavailable in this browser.";
+  ui.voice.setAttribute("aria-label", "under rework");
+  ui.voiceNote.textContent = "under rework";
 }
 
 document.addEventListener("keydown", (event) => {

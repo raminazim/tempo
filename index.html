@@ -3,7 +3,7 @@
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <title>Tempo — One word at a time</title>
+    <title>Tempo</title>
     <meta
       name="description"
       content="Paste your text, set your pace, and read one word at a time with Tempo."
@@ -531,14 +531,9 @@
       <a class="brand" href="./" aria-label="Tempo home">
         <img src="tempo-logo.png" alt="Tempo" />
       </a>
-      <span class="header-note">One word at a time.</span>
     </header>
 
     <main>
-      <div class="intro">
-        <h1>Read at your rhythm.</h1>
-        <p>Paste text, choose a pace, and press play.</p>
-      </div>
 
       <div class="workspace">
         <section class="editor" aria-label="Text editor">
@@ -556,15 +551,11 @@
           ></textarea>
           <div class="editor-foot">
             <span id="count">0 words</span>
-            <button class="text-button" id="sample" type="button">
-              Try a sample ↗
-            </button>
           </div>
         </section>
 
         <section class="reader" aria-label="Word reader">
           <div class="reader-top">
-            <span>FOCUS READER</span>
             <span class="status" id="status">Ready when you are</span>
           </div>
 
@@ -641,8 +632,8 @@
 
           <div class="options">
             <label><input type="checkbox" id="loop" /> Loop text</label>
-            <label><input type="checkbox" id="voice" /> Read aloud</label>
-            <span class="voice-note" id="voice-note">Voice pace varies by browser.</span>
+            <label><input type="checkbox" id="voice" /> under rework</label>
+            <span class="voice-note" id="voice-note">under rework</span>
           </div>
         </section>
       </div>
@@ -675,23 +666,14 @@
             aria-label="Reading speed slider"
           />
           <div class="range-labels">
-            <span>50 · Take it slow</span>
-            <span>1,200 · Find your flow</span>
+            <span>50</span>
+            <span>1,200</span>
           </div>
         </div>
       </section>
 
       <footer>
-        <span
-          ><kbd>Space</kbd> play / pause
-          <span style="margin-left: 12px"><kbd>←</kbd> back 10 words</span></span
-        >
-        <span
-          >Made by
-          <a href="https://github.com/raminazim" target="_blank" rel="noopener noreferrer"
-            >Ramin Azim ↗</a
-          ></span
-        >
+        <span><kbd>Space</kbd> play / pause <span style="margin-left: 12px"><kbd>←</kbd> back 10 words</span></span>
       </footer>
     </main>
 
